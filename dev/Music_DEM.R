@@ -26,20 +26,33 @@ savewav(testy)
 
 ##########
 
-#############
+##attempt 3
+pi = 3.1415926535
+vertspacing = 10
+horzspacing = 10
+thetamax = 10 * pi
+#underlying spiral
+b = vertspacing/2/pi
+theta = seq(from = 0, to = thetamax, by = 0.01)
+#theta = 0:0.01:thetamax
+x = b*theta*cos(theta)
+y = b*theta*sin(theta)
 
-
-t <- seq(0, 50, by=0.001)
-x = t*cos(t)
-y = t*sin(t)
 plot(x,y)
-point_df <- data.frame(x,y)
 
-point_df$x <- range01(point_df$x)
-point_df$y <- range01(point_df$y)
+#equidistant points
+smax = 0.5*b*thetamax*thetamax
+#s = 0:horzspacing:smax
+s = seq(from = 0, to = smax, by = horzspacing)
+thetai = sqrt(2*s/b)
+xi = b*thetai*cos(thetai)
+yi = b*thetai*sin(thetai)
 
-plot(point_df$x, point_df$y)
+plot(xi,yi)
 
+
+#point_df$x <- range01(point_df$x)
+#point_df$y <- range01(point_df$y)
 
 #  read in dem
 
@@ -83,11 +96,22 @@ sound_vec <- na.omit(sound_vec)
 sound_vec$rr201404_029_lagoon02_dem <- range01(sound_vec$rr201404_029_lagoon02_dem)
 str(sound_vec)
 
+
+library(signal)
+#bf <- butter(3, 0.5)    # 10 Hz low-pass filter
+#sound_vec$rr201404_029_lagoon02_dem <- filtfilt(bf,x = sound_vec$rr201404_029_lagoon02_dem)
+sound_vec$rr201404_029_lagoon02_dem <- fft(sound_vec$rr201404_029_lagoon02_dem )
+
+
 plot(sound_vec, type = 'l')
 
 
 # sound
-testy <- audioSample(sound_vec$rr201404_029_lagoon02_dem, bits = 8)
+
+
+
+
+testy <- audioSample(sound_vec$rr201404_029_lagoon02_dem, bits = 16)
 
 
 
@@ -95,7 +119,7 @@ str(testy)
 plot(testy)
 
 play(testy)
-#savewav(testy)
+savewav(testy)
 
 
 
